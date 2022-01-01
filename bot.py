@@ -23,6 +23,14 @@ except JSONDecodeError:
 bot = commands.Bot(command_prefix='!')
 
 ##Commands
+@bot.command(name='all', help='Shows everyone\'s resolution')
+async def all(ctx):
+    try:
+        for user in log:
+            await ctx.send(f'{log[user]["name"]}: {log[user]["resolution"]} | Last Update: {log[user]["update_date"]}')
+    except:
+        pass
+
 @bot.command(name='res', help='Shows your resolution and status')
 async def resolution(ctx):
     try: 
