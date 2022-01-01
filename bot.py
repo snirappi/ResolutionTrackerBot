@@ -2,6 +2,7 @@ from json.decoder import JSONDecodeError
 import os
 import json
 from datetime import date, timedelta
+from discord.ext.commands.errors import MissingRequiredArgument
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
 
@@ -34,23 +35,27 @@ async def resolution(ctx):
 
 @bot.command(name='set', help='Sets your resolution for 2022. ex: !set "Eat Healthy"')
 async def set_resolution(ctx, resolution: str):
-    log[ctx.author.id] = {}
-    log[ctx.author.id]['resolution'] = resolution
-    log[ctx.author.id]['name'] = ctx.author.name
-    log[ctx.author.id]['mention'] = '<@'+str(ctx.author.id)+'>'
-    log[ctx.author.id]['update'] = ''
-    log[ctx.author.id]['update_date'] = date.today().isoformat()
+    id = str(ctx.author.id)
+    log[id] = {}
+    log[id]['resolution'] = resolution
+    log[id]['name'] = ctx.author.name
+    log[id]['mention'] = '<@'+str(ctx.author.id)+'>'
+    log[id]['update'] = ''
+    log[id]['update_date'] = date.today().isoformat()
     response=resolution
     print(log[ctx.author.id])
     dump_json()
     await ctx.send(f'{ctx.author.name}\'s New Year Resolution: ' + response)
 
-@bot.command(name='update', help='Tells everyone any updates on your resolution')
+@bot.command(name='update', help='Tells everyone any updates on your resolution. ex: !updated "this is my update today"')
 async def update_resolution(ctx, update: str):
-    log[str(ctx.author.id)]['update'] = update
-    log[str(ctx.author.id)]['update_date'] = date.today().isoformat()
-    dump_json()
-    await ctx.send(f'Thanks for updating us {ctx.author.name}!')
+    try:
+        log[str(ctx.author.id)]['update'] = update
+        log[str(ctx.author.id)]['update_date'] = date.today().isoformat()
+        dump_json()
+        await ctx.send(f'Thanks for updating us {ctx.author.name}!')
+    except MissingRequiredArgument:
+        await ctx.send(f'Don\'t forget to include the update ( !update "this is my update today")')
 
 ##Tasks
 @tasks.loop(hours=24)
