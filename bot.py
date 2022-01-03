@@ -11,6 +11,8 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL = os.getenv('CHANNEL')
 JSON_FILE = os.getenv('JSON_FILE')
+SUCCESS_EMOJI = os.getenv('SUCCESS_EMOJI')
+FAIL_EMOJI = os.getenv('FAIL_EMOJI')
 log = {}
 try: 
     with open(JSON_FILE, 'r') as openfile:
@@ -74,9 +76,9 @@ async def announce_statuses():
     await channel.send(f'This week\'s resolution results: ')
     for user in log:
         if date.fromisoformat(log[user]['update_date']) > (date.today()-timedelta(days=7)):
-            await channel.send(f'{log[user]["mention"]} \u2714')
+            await channel.send(f'{log[user]["mention"]} {SUCCESS_EMOJI}')
         else:
-            await channel.send(f'{log[user]["mention"]} \u274C')
+            await channel.send(f'{log[user]["mention"]} {FAIL_EMOJI}')
 
 ##Helpers
 def dump_json():
