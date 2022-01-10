@@ -78,7 +78,7 @@ async def update_resolution(ctx, update: str):
     if ctx.channel.id != int(CHANNEL):
         return
     try:
-        log[str(ctx.author.id)]['update'] = update
+        log[str(ctx.author.id)]['update'] = update.strip()
         log[str(ctx.author.id)]['update_date'] = date.today().isoformat()
         dump_json()
         await ctx.send(f'Thanks for updating us {ctx.author.name}!')
