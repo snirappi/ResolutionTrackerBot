@@ -126,7 +126,7 @@ async def announce_statuses():
             else:
                 await channel.send(f'{log[user]["mention"]} {FAIL_EMOJI}')
         elif log[user]['daily'] == True: 
-            if date.fromisoformat(log[user]['update_date']) > DAILY_DELTA:
+            if date.fromisoformat(log[user]['update_date']) >= DAILY_DELTA:
                 await channel.send(f'{log[user]["mention"]} {SUCCESS_EMOJI}')
             else:
                 await channel.send(f'{log[user]["mention"]} {FAIL_EMOJI}')
