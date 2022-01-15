@@ -53,7 +53,7 @@ async def resolution(ctx):
         return
     try: 
         user_info = log[str(ctx.author.id)]
-        await ctx.send(f'{user_info["mention"]}\'s resolution: {user_info["resolution"]} | {"Daily" if user_info["daily"] else "Weekly"}\nMost Recent Update: \"{user_info["update"]}\" on {date_format(datetime.strptime(user_info["update_date"], "%Y-%m-%d").date())}')
+        await ctx.send(f'{user_info["mention"]}\'s resolution: {user_info["resolution"]} | {"Daily" if user_info["daily"] else "Weekly"}\nMost Recent Update: \"{user_info["update"]}\" on {date_format(datetime.strptime(user_info["update_date"], "%Y-%m-%d").date())}\nDays Logged: {user_info["unique_day_count"]} | Total Updates: {user_info["update_count"]}')
     except KeyError: 
         await ctx.send('You don\'t have a resolution! use !set to make one')
 
@@ -68,6 +68,8 @@ async def set_resolution(ctx, resolution: str):
     log[id]['mention'] = '<@'+str(ctx.author.id)+'>'
     log[id]['update'] = ''
     log[id]['update_date'] = date.today().isoformat()
+    log[id]['update_count'] = 0
+    log[id]['unique_day_count'] = 0
     log[id]['daily'] = False
     response=resolution
     dump_json()
@@ -78,6 +80,9 @@ async def update_resolution(ctx, update: str):
     if ctx.channel.id != int(CHANNEL):
         return
     try:
+        if date.fromisoformat(log[str(ctx.author.id)]['update_date']) != date.today() or log[str(ctx.author.id)]['unique_day_count'] == 0:
+            log[str(ctx.author.id)]['unique_day_count'] = log[str(ctx.author.id)]['unique_day_count'] + 1
+        log[str(ctx.author.id)]['update_count'] = log[str(ctx.author.id)]['update_count'] + 1
         log[str(ctx.author.id)]['update'] = update.strip()
         log[str(ctx.author.id)]['update_date'] = date.today().isoformat()
         dump_json()
